@@ -7,7 +7,7 @@ import {createProducts ,getAllProducts, updateProduct } from '../controller/prod
 // Product Routes
 router.get("/products", getAllProducts);
 router.post("/products", createProducts);
-router.route("/product/:id").put(updateProduct);
+router.put("/product/:id", updateProduct);
 // router.route("/product").get(getSingleProduct);
 
 

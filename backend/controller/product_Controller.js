@@ -33,6 +33,11 @@ export const getAllProducts = async(req, res) => {
 export const updateProduct = async (req, res) => {
     const product = await Product.findById(req.params.id);
     console.log(product);
+        res.status(200).json({
+        success : true,
+        product
+    })
+    
     if(!product) {
         return res.status(404).json({
             success : false,
