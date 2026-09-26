@@ -5,7 +5,8 @@ import {createProducts ,getAllProducts} from '../controller/product_Controller.j
 //Routes 
 
 // Product Routes
-router.route("/products").get(getAllProducts).post(createProducts);
+router.get("/products", getAllProducts);
+router.post("/products", createProducts);
 // router.route("/product").get(getSingleProduct);
 
 

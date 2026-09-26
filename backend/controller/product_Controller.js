@@ -3,11 +3,20 @@ import Product from '../models/productModel.js';
 // Creating Product 
 
 export const createProducts = async (req, res) => {
-     const product = await Product.create(req.body)
-     res.status(201).json({
-        success : true,
-        product
-     })
+     try {
+         const product = await Product.create(req.body);
+         console.log("Product created:", product);
+         res.status(201).json({
+            success: true,
+            product
+         });
+         
+     } catch (error) {
+         res.status(400).json({
+            success: false,
+            message: error.message
+         });
+     }
 }
 
 export const getAllProducts = (req, res) => {
