@@ -1,8 +1,9 @@
 import Product from '../models/productModel.js';
 import HandleError from '../utils/handleError.js';
+import handleAsynError from '../middleware/handleAsynError.js';
  
 // Creating Product 
-export const createProducts = async (req, res) => {
+export const createProducts = handleAsynError(async (req, res, next) => {
      try {
          const product = await Product.create(req.body);
          console.log("Product created:", product);
@@ -17,21 +18,21 @@ export const createProducts = async (req, res) => {
             message: error.message
          });
      }
-}
+});
 
 // Get All Products
 
-export const getAllProducts = async(req, res) => {
+export const getAllProducts = handleAsynError(async(req, res) => {
     const products = await Product.find()
     res.status(200).json({
         success : true,
         products
     })
-}
+})
 
 // Update Product 
  
-export const updateProduct = async (req, res, next) => {
+export const updateProduct = handleAsynError(async (req, res, next) => {
     const product = await Product.findByIdAndUpdate(req.params.id,req.body,{
             new: true,
             runValidators: true
@@ -44,11 +45,11 @@ export const updateProduct = async (req, res, next) => {
         success: true,
         product
     });
-};
+});
 
 // Delete Product 
 
-export const deleteProduct = async (req, res, next) => {
+export const deleteProduct = handleAsynError(async (req, res, next) => {
     const product =  await Product.findByIdAndDelete(req.params.id);
 
     if(!product){
@@ -59,11 +60,11 @@ export const deleteProduct = async (req, res, next) => {
         success : true,
         message : "Product deleted successfully"
     });
-}
+});
 
 // Getting Single Product 
 
-export const getSingleProduct = async (req, res, next) => {
+export const getSingleProduct = handleAsynError(async (req, res, next) => {
     const product = await Product.findById(req.params.id);
     console.log(product);
 
@@ -74,5 +75,5 @@ export const getSingleProduct = async (req, res, next) => {
     return res.status(200).json({
         success : true,
         product
-    })
-}
+    }) 
+});
