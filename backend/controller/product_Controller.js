@@ -3,7 +3,7 @@ import HandleError from '../utils/handleError.js';
 import handleAsynError from '../middleware/handleAsynError.js';
  
 // Creating Product 
-export const createProducts = handleAsynError(async (req, res) => {
+export const createProducts = handleAsynError(async (req, res, next) => {
     
          const product = await Product.create(req.body);
          console.log("Product created:", product);
@@ -15,7 +15,7 @@ export const createProducts = handleAsynError(async (req, res) => {
 
 // Get All Products
 
-export const getAllProducts = handleAsynError(async(req, res) => {
+export const getAllProducts = handleAsynError(async(req, res, next) => {
     const products = await Product.find()
     res.status(200).json({
         success : true,

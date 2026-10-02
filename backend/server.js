@@ -15,14 +15,13 @@ dotenv.config({ path: './backend/config/config.env' });
 
 // Connecting to MongoDB
 await connectMongoDatabase();
-
 const PORT = process.env.PORT || 8000;
 
 const server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
-
+// Handle Unhandled Promise Rejection Error
 process.on('unhandledRejection', (err) => {
     console.log(`Error: ${err.message}`);
     console.log('Shutting down the server due to unhandled promise rejection');
