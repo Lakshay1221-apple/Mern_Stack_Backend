@@ -17,10 +17,8 @@ export const createProducts = handleAsynError(async (req, res, next) => {
 // Get All Products
 
 export const getAllProducts = handleAsynError(async(req, res, next) => {
-    const apiFunctionality = new APIFunctionality(Product.find(), req.query).search().filter().pagination(5);
-    console.log(req.query);
-
-    const products = await Product.find()
+    const apiFunctionality = new APIFunctionality(Product.find(), req.query).search().filter().pagination(3);
+    const products = await apiFunctionality.query;
     res.status(200).json({
         success : true,
         products
