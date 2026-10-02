@@ -3,21 +3,14 @@ import HandleError from '../utils/handleError.js';
 import handleAsynError from '../middleware/handleAsynError.js';
  
 // Creating Product 
-export const createProducts = handleAsynError(async (req, res, next) => {
-     try {
+export const createProducts = handleAsynError(async (req, res) => {
+    
          const product = await Product.create(req.body);
          console.log("Product created:", product);
          res.status(201).json({
             success: true,
             product
-         });
-
-     } catch (error) { 
-         res.status(400).json({
-            success: false,
-            message: error.message
-         });
-     }
+         });    
 });
 
 // Get All Products
