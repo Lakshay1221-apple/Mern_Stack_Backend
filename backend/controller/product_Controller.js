@@ -38,7 +38,7 @@ export const getAllProducts = handleAsynError(async(req, res, next) => {
     apiFeatures.pagination(resultPerPage);
     const products = await apiFeatures.query;
 
-    const product = await Product.findById(req.params.id);
+    const product = await Product.find().skip(resultPerPage * (page - 1)).limit(resultPerPage);
 
     if(!product || products.length == 0){
         return next(new HandleError("Product not found", 404));
