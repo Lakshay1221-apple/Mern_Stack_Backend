@@ -1,6 +1,7 @@
 import handleAsynError from '../middleware/handleAsynError.js';
 import User from "../models/userModel.js";
-import sendToken from '../utils/jwtToken.js';
+import {sendToken} from '../utils/jwtToken.js';
+import HandleError from '../utils/handleError.js';
 
 // Register User
 export const registerUser =  handleAsynError(async(req, res , next) => {
@@ -21,7 +22,7 @@ export const registerUser =  handleAsynError(async(req, res , next) => {
 })
 
 // Login User
-export const loginUser = handleAsyncError(async(req, res, next) => {
+export const loginUser = handleAsynError(async(req, res, next) => {
     const {email , password} = req.body;
 
     if(!email || !password){

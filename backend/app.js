@@ -3,6 +3,10 @@ const app = express();
 import product from './routes/productRoutes.js';
 import user from './routes/userRoutes.js';
 import errorHandleMiddleware from './middleware/error.js';
+import cookieParser from 'cookie-parser';
+
+// Using cookie parser
+app.use(cookieParser());
 
 // Middleware
 app.use(express.json());
