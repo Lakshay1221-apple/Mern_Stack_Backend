@@ -75,4 +75,11 @@ userSchema.methods.comparePassword = async function(enteredPassword){
     return await bcryptjs.compare(enteredPassword, this.password);
 }
 
+userSchema.methods.generatePasswordResetToken = function() {
+    const resetToken = crypto.randomBytes(20).toString("hex");
+
+}
+
+
+
 export default mongoose.model("User", userSchema);
