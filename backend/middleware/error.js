@@ -10,6 +10,13 @@ export default (err, req , res ,next) => {
         err = new HandleError(message, 400);
     }
 
+    // Duplicate Email error 
+
+    if(err.code === 11000){
+        const message = `This email ${err.keyValue} Already exists. Please use another email`;
+        err = new HandleError(message, 400);
+    }
+
     res.status(err.statusCode).json({
         success : false,
         message : err.message

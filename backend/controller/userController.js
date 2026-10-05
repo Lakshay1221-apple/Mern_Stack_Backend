@@ -1,5 +1,6 @@
-import { handleAsynError } from "../middleware/handleAsynError.js";
+import handleAsynError from '../middleware/handleAsynError.js';
 import User from "../models/userModel.js";
+
 
 export const registerUser =  handleAsynError(async(req, res , next) => {
     const {name, email, password} = req.body;
@@ -14,8 +15,11 @@ export const registerUser =  handleAsynError(async(req, res , next) => {
         }
     })
 
+    const token = user.getJWTToken();
+
     res.status(201).json({
         success: true,
-        user
+        user,
+        token
     })
 })
