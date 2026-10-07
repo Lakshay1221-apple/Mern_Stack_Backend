@@ -80,6 +80,4 @@ userSchema.methods.generatePasswordResetToken = function() {
 
 }
 
-
-
 export default mongoose.model("User", userSchema);
