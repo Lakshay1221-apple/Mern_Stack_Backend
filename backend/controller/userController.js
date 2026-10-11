@@ -57,3 +57,22 @@ export const logout = handleAsynError(async(req, res, next) => {
         message: "Logged Out"
     })
 })
+
+// Reset password 
+
+export const requestPasswordReset = handleAsynError(async (req, res, next) => {
+    const user = await User.findOne({email: req.body.email});
+
+    if(!user){
+        return next(new HandleError("User not found with this email", 404));
+    }
+
+    let resetToken;
+
+    try{
+        resetToken = user.generatePasswordResetToken();
+        console.log(resetToken);
+    } catch (error){
+        return next(new HandleError("Error generating reset token", 500));
+    }
+});
