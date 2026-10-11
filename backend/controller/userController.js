@@ -137,3 +137,15 @@ export const resetPassword = handleAsynError(async (req, res, next) => {
     sendToken(user, 200, res);
 
 }); 
+
+
+// get user details 
+
+export const getUserDetails = handleAsynError(async (req, res, next) => {
+    const user = await User.findById(req.user.id);
+
+    res.status(200).json({
+        success: true,
+        user
+    });
+})
