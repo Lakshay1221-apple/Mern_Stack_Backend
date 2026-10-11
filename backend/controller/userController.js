@@ -71,8 +71,39 @@ export const requestPasswordReset = handleAsynError(async (req, res, next) => {
 
     try{
         resetToken = user.generatePasswordResetToken();
-        console.log(resetToken);
+        await user.save({validateBeforeSave: false});
     } catch (error){
         return next(new HandleError("Error generating reset token", 500));
     }
+
+    const resetPasswordUrl = `http://localhost:3000/api/reset/${resetToken}`;
+    const message = `Your password reset token is as follows:\n\n${resetPasswordUrl}\n\n
+    If you have not requested this email, please ignore it.`;
+
+    try{
+        // Sent Email 
+        await sendEmail({
+            email : user.email,
+            subject : "Password Recovery",
+            message : message
+        })
+
+        res.status(200).json({
+            success: true,
+            message: `Email sent to ${user.email} successfully`
+        });
+
+
+    } catch (error){
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpire = undefined;
+        await user.save({validateBeforeSave: false});
+        return next(new HandleError("Error sending reset email", 500));
+    }
+
+    res.status(200).json({
+        success: true,
+        message: "Password reset link sent to your email",
+        resetPasswordUrl
+    });
 });

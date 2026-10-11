@@ -56,13 +56,14 @@ const userSchema = new mongoose.Schema({
 });
 // Password hashing and other methods can be added here as needed
 
-
 userSchema.pre("save", async function(next){
-    this.password = await bcryptjs.hash(this.password, 10);
 
     if(!this.isModified("password")){
         return next();
     }
+    this.password = await bcryptjs.hash(this.password, 10);
+    next();
+    
 })
 
 userSchema.methods.getJWTToken = function(){
