@@ -2,6 +2,7 @@ import handleAsynError from '../middleware/handleAsynError.js';
 import User from "../models/userModel.js";
 import {sendToken} from '../utils/jwtToken.js';
 import HandleError from '../utils/handleError.js';
+import crypto from 'crypto';
 
 // Register User
 export const registerUser =  handleAsynError(async(req, res , next) => {
@@ -107,3 +108,32 @@ export const requestPasswordReset = handleAsynError(async (req, res, next) => {
         resetPasswordUrl
     });
 });
+
+// Reset password 
+
+export const resetPassword = handleAsynError(async (req, res, next) => {
+    const resetPasswordToken = crypto.createHash("sha256").update(req.params.token).digest("hex"); 
+    const user = await User.findOne({
+        resetPasswordToken,
+        resetPasswordExpire: { $gt: Date.now() }
+    })
+
+    if(!user){
+        return next(new HandleError("Reset Password Token is invalid or has been expired", 400));
+    }
+
+    const {password, confirmPassword} = req.body;
+
+    if(password !== confirmPassword){
+        return next(new HandleError("Password and Confirm Password do not match", 400));
+    }
+
+    user.password = password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save();
+
+    sendToken(user, 200, res);
+
+}); 
