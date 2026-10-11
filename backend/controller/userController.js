@@ -59,7 +59,7 @@ export const logout = handleAsynError(async(req, res, next) => {
     })
 })
 
-// Reset password 
+// Forget password 
 
 export const requestPasswordReset = handleAsynError(async (req, res, next) => {
     const user = await User.findOne({email: req.body.email});
@@ -149,3 +149,26 @@ export const getUserDetails = handleAsynError(async (req, res, next) => {
         user
     });
 })
+
+// Update user password
+
+export const updatePassword = handleAsynError(async (req, res, next) => {
+
+    const {oldPassword , newPassword , confirmPassword} = req.body;
+    const user = await User.findById(req.user.id).select("+password");
+
+    const checkPasswordMatch = await user.comparePassword(oldPassword);
+
+    if(!checkPasswordMatch){
+        return next(new HandleError("Old Password is incorrect", 400));
+    }
+
+    if(newPassword !== confirmPassword){
+        return next(new HandleError("New Password and Confirm Password do not match", 400));
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    sendToken(user, 200, res);
+});
