@@ -16,7 +16,6 @@ export const createProducts = handleAsynError(async (req, res, next) => {
 });
 
 // Get All Products
-
 export const getAllProducts = handleAsynError(async(req, res, next) => {
     const apiFeatures = new APIFunctionality(Product.find(), req.query).search().filter();
 
@@ -56,8 +55,7 @@ export const getAllProducts = handleAsynError(async(req, res, next) => {
  
 })
 
-// Update Product 
- 
+// Update Product  
 export const updateProduct = handleAsynError(async (req, res, next) => {
     const product = await Product.findByIdAndUpdate(req.params.id,req.body,{
             new: true,
@@ -74,7 +72,6 @@ export const updateProduct = handleAsynError(async (req, res, next) => {
 });
 
 // Delete Product 
-
 export const deleteProduct = handleAsynError(async (req, res, next) => {
     const product =  await Product.findByIdAndDelete(req.params.id);
 
@@ -89,7 +86,6 @@ export const deleteProduct = handleAsynError(async (req, res, next) => {
 });
 
 // Getting Single Product 
-
 export const getSingleProduct = handleAsynError(async (req, res, next) => {
     const product = await Product.findById(req.params.id);
     console.log(product);
@@ -103,3 +99,13 @@ export const getSingleProduct = handleAsynError(async (req, res, next) => {
         product
     }) 
 });
+
+// Admin getting all products 
+
+export const getAdminProducts = handleAsynError(async (req, res, next) => {
+    const products = await Product.find();
+    res.status(200).json({
+        success: true,
+        products
+    })
+})

@@ -60,7 +60,6 @@ export const logout = handleAsynError(async(req, res, next) => {
 })
 
 // Forget password 
-
 export const requestPasswordReset = handleAsynError(async (req, res, next) => {
     const user = await User.findOne({email: req.body.email});
 
@@ -110,7 +109,6 @@ export const requestPasswordReset = handleAsynError(async (req, res, next) => {
 });
 
 // Reset password 
-
 export const resetPassword = handleAsynError(async (req, res, next) => {
     const resetPasswordToken = crypto.createHash("sha256").update(req.params.token).digest("hex"); 
     const user = await User.findOne({
@@ -140,7 +138,6 @@ export const resetPassword = handleAsynError(async (req, res, next) => {
 
 
 // get user details 
-
 export const getUserDetails = handleAsynError(async (req, res, next) => {
     const user = await User.findById(req.user.id);
 
@@ -151,7 +148,6 @@ export const getUserDetails = handleAsynError(async (req, res, next) => {
 })
 
 // Update user password
-
 export const updatePassword = handleAsynError(async (req, res, next) => {
 
     const {oldPassword , newPassword , confirmPassword} = req.body;
@@ -174,7 +170,6 @@ export const updatePassword = handleAsynError(async (req, res, next) => {
 });
 
 // Updating a user profile 
-
 export const updateProfile = handleAsynError(async (req, res, next) => {
     const {name , email} = req.body;
     const updateUserData = {
@@ -182,7 +177,7 @@ export const updateProfile = handleAsynError(async (req, res, next) => {
         email : email
     }
     const user = await User.findByIdAndUpdate(req.user.id, updateUserData, {
-        new: true,
+        new: true,  
         runValidators: true,
         useFindAndModify: false
     });
@@ -192,3 +187,12 @@ export const updateProfile = handleAsynError(async (req, res, next) => {
         user
     });
 })
+
+// Admin getting all users
+export const getUsersList = async (req, res, next) => {
+    const users = await User.find();
+    res.status(200).json({
+        success: true,
+        users
+    })
+}
