@@ -172,3 +172,23 @@ export const updatePassword = handleAsynError(async (req, res, next) => {
 
     sendToken(user, 200, res);
 });
+
+// Updating a user profile 
+
+export const updateProfile = handleAsynError(async (req, res, next) => {
+    const {name , email} = req.body;
+    const updateUserData = {
+        name : name,
+        email : email
+    }
+    const user = await User.findByIdAndUpdate(req.user.id, updateUserData, {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false
+    });
+
+    res.status(200).json({
+        success: true,
+        user
+    });
+})
