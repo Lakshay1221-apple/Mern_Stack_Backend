@@ -211,6 +211,7 @@ export const getSingleUser = handleAsynError(async (req, res, next) => {
     })
 });
 
+
 // Change user role (Admin)
 export const changeUserRole = handleAsynError(async (req, res, next) => {
 
@@ -232,5 +233,21 @@ export const changeUserRole = handleAsynError(async (req, res, next) => {
     res.status(200).json({
         success: true,
         user
+    })
+});
+
+// Delete user (Admin)
+export const deleteUser = handleAsynError(async (req, res, next) => {
+    const user = await User.findById(req.params.id);
+
+    if(!user){
+        return next(new HandleError(`User does not exist with id: ${req.params.id}`, 404));
+    }
+
+    await user.remove();
+
+    res.status(200).json({
+        success: true,
+        message: "User deleted successfully"
     })
 });
