@@ -117,10 +117,35 @@ export const createProductReview = handleAsynError(async (req, res, next) => {
     const isReviewed = product.reviews.find(
         (rev) => rev.user.toString() === req.user._id.toString()
     );
+    if(isReviewed){
+        product.reviews.forEach((rev) => {
+            if(rev.user.toString() === req.user._id.toString()){
+                rev.rating = rating;
+                rev.comment = comment;
+            }
+        });
+    }else{
+        product.reviews.push(review);
+        product.numOfReviews = product.reviews.length;
+    }
+
+    let avg = 0;
+    product.reviews.forEach((rev) => {
+        avg += rev.rating;
+    });
+
+    product.ratings = avg / product.reviews.length;
+
+    await product.save({validateBeforeSave : false});
+
+    res.status(200).json({
+        success : true,
+        message : "Review added successfully"
+    })
 });
 
 // Admin getting all products 
-export const getAdminProducts = handleAsynError(async (req, res, next) => {
+export const getAdminProducts = handleAsynError(async (req, res, next) => { 
     const products = await Product.find();
     res.status(200).json({
         success: true,
