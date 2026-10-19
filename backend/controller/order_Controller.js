@@ -126,7 +126,11 @@ export const deleteOrder = handleAsynError(async(req, res, next) => {
         return next(new HandleError("Order not found with this id", 404));
     }
 
-    await order.remove();
+    if(order.orderStatus === "Delivered"){
+        return next(new HandleError("You cannot delete a delivered order", 400));
+    }
+
+    await order.deleteOne({ _id: req.params.id });
 
     res.status(200).json({
         success: true,
