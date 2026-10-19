@@ -34,7 +34,7 @@ export const getSingleOrder = handleAsynError(async (req, res, next) => {
     if(!order){
         return next(new HandleError("Order not found with this id", 404));
     }
-
+  
     res.status(200).json({
         success: true,
         order
