@@ -1,4 +1,4 @@
-import Order from "../models/order_Model.js";
+import Order from "../models/orderModel.js";
 import HandleError from "../utils/handleError.js";
 import Product from "../models/productModel.js";
 import User from "../models/userModel.js";
@@ -22,6 +22,20 @@ export const createOrder = handleAsynError(async (req, res, next) => {
     })
 
     res.status(201).json({
+        success: true,
+        order
+        })
+});
+
+// Getting single order 
+export const getSingleOrder = handleAsynError(async (req, res, next) => {
+    const order = await Order.findById(req.params.id).populate("user", "name email");
+
+    if(!order){
+        return next(new HandleError("Order not found with this id", 404));
+    }
+
+    res.status(200).json({
         success: true,
         order
     })
