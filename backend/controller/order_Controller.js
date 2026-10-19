@@ -69,3 +69,34 @@ export const getAllOrders = handleAsynError(async(req, res, next) => {
         orders
     })
 });
+
+//Update Order Status (Admin)
+export const updateOrderStats = handleAsynError(async(req, res, next) => {
+
+    const order = await Order.findById(req.params.id);
+
+    if(!order){
+        return next(new HandleError("Order not found with this id", 404));
+    }
+
+    if(order.orderStatus === "Delivered"){
+        return next(new HandleError("You have already delivered this order", 400));
+    }
+
+    order.orderItems.forEach(async (item) => {
+        await updateStock(item.product, item.quantity);
+    })
+
+    order.orderStatus = req.body.status;
+
+    if(req.body.status === "Delivered"){
+        order.deliveredAt = Date.now();
+    }
+
+    await order.save({validateBeforeSave: false});
+
+    res.status(200).json({
+        success: true,
+        order
+    })
+});
