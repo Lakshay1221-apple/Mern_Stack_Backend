@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import {createProducts ,getAllProducts, updateProduct , deleteProduct, getSingleProduct, getAdminProducts, createProductReview} from '../controller/product_Controller.js'
+import {createProducts ,getAllProducts, updateProduct , deleteProduct, getSingleProduct, getAdminProducts, createProductReview, getProductReviews} from '../controller/product_Controller.js'
 import { roleBasedAccess, verifyUserAuth } from '../middleware/userAuth.js';
 //Routes 
 
@@ -12,6 +12,7 @@ router.put("/admin/product/:id",verifyUserAuth ,roleBasedAccess("admin") , updat
 router.delete("/admin/product/:id", verifyUserAuth,roleBasedAccess("admin") ,deleteProduct);
 router.get("/product/:id", getSingleProduct);
 router.put("/review", verifyUserAuth, createProductReview);
+router.get("/reviews", verifyUserAuth, getProductReviews);
 
 
 
