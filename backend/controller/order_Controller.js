@@ -100,3 +100,19 @@ export const updateOrderStats = handleAsynError(async(req, res, next) => {
         order
     })
 });
+
+async function updateStock(id, quantity){
+    const product = await Product.findById(id);
+
+    if(!product){
+        throw new HandleError("Product not found with this id", 404);
+    }
+
+    if(product.stock < quantity){
+        throw new HandleError(`Not enough stock for product ${product.name}`, 400);
+    }
+
+    product.stock -= quantity;
+
+    await product.save({validateBeforeSave: false});
+}
