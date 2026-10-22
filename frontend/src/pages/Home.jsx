@@ -8,6 +8,9 @@ import Product from '../components/Product';
 
 import '../pageStyles/Home.css';
 import PageTitle from '../components/PageTitle';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { getProduct } from '../features/products/productSlice';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -54,7 +57,12 @@ const Home = () => {
   const addToCart = (product) => {
     // Connect this handler to your existing cart state/API.
     console.log('Adding product to cart:', product);
-  };
+  }
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getProduct()); 
+  }, [dispatch]);
 
   return (
     <>

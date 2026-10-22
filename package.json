@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon backend/server.js"
+    "dev": "nodemon backend/server.js",
+    "migrate:product-images": "node backend/scripts/migrateProductImages.js",
+    "migrate:product-images:apply": "node backend/scripts/migrateProductImages.js --apply"
   },
   "keywords": [],
   "type": "module",

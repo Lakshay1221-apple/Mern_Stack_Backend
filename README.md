@@ -90,7 +90,32 @@ All endpoints are prefixed with `/api/v1`. See [docs/API.md](docs/API.md) for re
 - Passwords are hashed before being stored.
 - Product routes expect the JWT to be provided in the `token` cookie.
 - Product creation is restricted to users with the `admin` role.
+- Product image migration defaults to a dry run. Review it with `npm run migrate:product-images`, then apply verified image URLs with `npm run migrate:product-images:apply`.
 - Use a REST client such as Postman or Insomnia to exercise the API.
+
+## Migrating product images
+
+`backend/scripts/migrateProductImages.js` updates only products that do not have
+an accessible image entry containing both a `public_id` and a `url`. It verifies
+image URLs as accessible image responses before proposing or writing them,
+preserves all other product fields, and is safe to rerun.
+
+Run the dry run first:
+
+```bash
+npm run migrate:product-images
+```
+
+If the summary contains only expected image matches, apply the changes:
+
+```bash
+npm run migrate:product-images:apply
+```
+
+The script uses the existing `DB_URL` and the `E-commerce` database name from
+the application connection configuration. It does not print credentials or
+delete products. Products reported as failed require a manually verified image
+URL before they can be migrated.
 
 ## License
 
