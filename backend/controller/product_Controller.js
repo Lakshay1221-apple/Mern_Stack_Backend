@@ -18,6 +18,7 @@ export const createProducts = handleAsynError(async (req, res, next) => {
 // Get All Products
 export const getAllProducts = handleAsynError(async(req, res, next) => {
     const apiFeatures = new APIFunctionality(Product.find(), req.query).search().filter();
+    const resultPerPage = Number(req.query.limit) || 8;
 
     // Getting Filtered query before page pagination
 
@@ -37,12 +38,6 @@ export const getAllProducts = handleAsynError(async(req, res, next) => {
 
     apiFeatures.pagination(resultPerPage);
     const products = await apiFeatures.query;
-
-    const product = await Product.find().skip(resultPerPage * (page - 1)).limit(resultPerPage);
-
-    if(!product || products.length == 0){
-        return next(new HandleError("Product not found", 404));
-    }
 
     res.status(200).json({
         success: true,
