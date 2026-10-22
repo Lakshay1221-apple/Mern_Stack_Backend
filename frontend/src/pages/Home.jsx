@@ -7,6 +7,7 @@ import ImageSlider from '../components/ImageSlider';
 import Product from '../components/Product';
 
 import '../pageStyles/Home.css';
+import PageTitle from '../components/PageTitle';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -57,6 +58,7 @@ const Home = () => {
 
   return (
     <>
+    <PageTitle title="Home - E-commerce Store" />
       <Navbar />
 
       <ImageSlider />
