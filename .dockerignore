@@ -1,0 +1,27 @@
+# Version control
+.git
+.gitignore
+
+# Environment and secrets
+**/.env
+**/.env.*
+backend/config/config.env
+
+# Dependencies
+**/node_modules
+
+# Build outputs
+frontend/dist
+
+# Logs and temporary files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+
+# Documentation and project files
+README.md
+docs
+compose*.yaml
+compose*.yml
