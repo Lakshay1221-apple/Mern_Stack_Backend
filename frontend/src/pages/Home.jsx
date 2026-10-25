@@ -5,6 +5,7 @@ import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import ImageSlider from '../components/ImageSlider';
 import Product from '../components/Product';
+import Loader from '../components/Loader';
 
 import '../pageStyles/Home.css';
 import PageTitle from '../components/PageTitle';
@@ -66,6 +67,7 @@ const Home = () => {
 
   return (
     <>
+{  loading ? (<Loader/>) :(  <>
     <PageTitle title="Home - E-commerce Store" />
       <Navbar />
 
@@ -97,7 +99,8 @@ const Home = () => {
 
       <Footer />
     </>
-  );
-};
+   ) }</>
+  )
+}
 
 export default Home;
