@@ -9,7 +9,7 @@ import cookieParser from 'cookie-parser';
 // Using cookie parser
 app.use(cookieParser());
 
-// Middleware
+// Middleware for parsing JSON data
 app.use(express.json());
 
 // Route

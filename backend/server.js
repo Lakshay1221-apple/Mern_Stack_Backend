@@ -8,7 +8,7 @@ process.on('uncaughtException', (err) => {
     console.log(`Error: ${err.message}`);
     console.log('Shutting down the server due to uncaught exception');
     process.exit(1);
-});
+});  
 
 // Load configuration before opening the database connection.
 dotenv.config({ path: './backend/config/config.env' });
