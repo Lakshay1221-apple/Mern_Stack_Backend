@@ -23,6 +23,7 @@ services:
     build:
       context: .
       dockerfile: backend/Dockerfile
+    network_mode: host
     restart: unless-stopped
     env_file:
       - path: .env
@@ -30,15 +31,10 @@ services:
     environment:
       NODE_ENV: development
       PORT: ${PORT:-8000}
-      DB_URL: mongodb://${MONGO_INITDB_ROOT_USERNAME:?MONGO_INITDB_ROOT_USERNAME is required in .env}:${MONGO_INITDB_ROOT_PASSWORD:?MONGO_INITDB_ROOT_PASSWORD is required in .env}@mongo:27017/E-commerce?authSource=admin
+      DB_URL: ${DB_URL:-mongodb://127.0.0.1:27017/E-commerce}
     depends_on:
       mongo:
         condition: service_healthy
-    # Not published to host by default to minimize host attack surface.
-    # Vite inside the frontend container proxies /api directly to http://backend:8000.
-    # Uncomment only if direct host API access (e.g., Postman / curl) is required:
-    # ports:
-    #   - "127.0.0.1:8000:8000"
     volumes:
       - ./backend:/app/backend
       - ./package.json:/app/package.json:ro
@@ -54,7 +50,9 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
-      BACKEND_URL: http://backend:8000
+      BACKEND_URL: http://host.docker.internal:8000
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       backend:
         condition: service_started

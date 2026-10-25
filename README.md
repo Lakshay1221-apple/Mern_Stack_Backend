@@ -70,6 +70,14 @@ npm run dev
 
 The API is available at `http://localhost:8000/api/v1` by default. The server must be able to connect to MongoDB before it starts accepting requests.
 
+When running with Docker Compose, set `DB_URL` in `.env` to the MongoDB instance
+that contains your products. The Compose development default uses the host
+MongoDB at `mongodb://127.0.0.1:27017/E-commerce`; the bundled
+MongoDB service has a separate volume and will not contain host database data.
+The backend uses host networking in this setup because a local MongoDB commonly
+binds only to `127.0.0.1`; the frontend proxies API requests to port `8000` on
+the host.
+
 ## API Overview
 
 | Method | Endpoint | Authentication | Purpose |
