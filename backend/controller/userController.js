@@ -18,7 +18,12 @@ export const registerUser =  handleAsynError(async(req, res , next) => {
         }
     })
 
-    sendToken(user, 201, res);
+    console.log("User registered:", user);
+
+    res.status(201).json({
+        success : true,
+        user
+    })
 
 })
 
