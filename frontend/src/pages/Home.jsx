@@ -6,12 +6,13 @@ import Navbar from '../components/Navbar';
 import ImageSlider from '../components/ImageSlider';
 import Product from '../components/Product';
 import Loader from '../components/Loader';
+import { toast } from 'react-toastify';
 
 import '../pageStyles/Home.css';
 import PageTitle from '../components/PageTitle';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { getProduct } from '../features/products/productSlice';
+import { getProduct, removeErrors } from '../features/products/productSlice';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -64,6 +65,13 @@ const Home = () => {
   useEffect(() => {
     dispatch(getProduct()); 
   }, [dispatch]);
+
+  useEffect(() => {
+    if (error){
+      toast.error(error,message, {position: 'top-center', autoClose : 3000, theme: 'colored'});
+      dispatch(removeErrors());
+    }
+  },[dispatch,error]);
 
   return (
     <>
