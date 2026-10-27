@@ -36,6 +36,11 @@ export const loginUser = handleAsynError(async(req, res, next) => {
     }
 
     const user = await User.findOne({email}).select("+password");
+    
+    let exitUser = await User.findOne({email});
+    if (!exitUser) {
+        return next(new HandleError("User not found with this email", 404));
+    }    
 
     if(!user){
         return next(new HandleError("Invalid Email or Password", 401));
