@@ -35,12 +35,7 @@ export const loginUser = handleAsynError(async(req, res, next) => {
         return next(new HandleError("Please Enter Email & Password", 400));
     }
 
-    const user = await User.findOne({email}).select("+password");
-    
-    let exitUser = await User.findOne({email});
-    if (!exitUser) {
-        return next(new HandleError("User not found with this email", 404));
-    }    
+    const user = await User.findOne({email}).select("+password");  
 
     if(!user){
         return next(new HandleError("Invalid Email or Password", 401));
@@ -59,7 +54,7 @@ export const loginUser = handleAsynError(async(req, res, next) => {
 export const logout = handleAsynError(async(req, res, next) => {
 
     res.cookie('token', null, {
-        expires: new Date(Date.now()),
+        expires: new Date(Date.now())
         httpOnly: true
     });
 
