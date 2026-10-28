@@ -1,54 +1,90 @@
-# E-Commerce API
+# E-Commerce Store
 
-A Node.js and Express REST API for an e-commerce platform. The service uses MongoDB for persistence, JWTs for authentication, and HTTP-only cookies for session transport.
+Full-stack e-commerce application with a React/Vite frontend and an
+Express/MongoDB backend. The frontend is available at `http://localhost:5173`
+and proxies `/api` requests to the backend on port `8000`.
 
 ## Features
 
-- User registration, login, and logout
-- JWT-based authentication with cookie support
-- Product creation, listing, retrieval, updating, and deletion
-- Role-based access for protected product operations
-- Product search, filtering, and pagination hooks
+- Product listing, search, filtering, pagination, and product details
+- User registration, login, logout, and JWT authentication
+- HTTP-only cookie-based sessions
+- Admin product creation, updating, and deletion
+- Product reviews
+- Responsive storefront UI with image slider, cart, and order flows
 - Centralized asynchronous error handling
+- Docker Compose development environment for MongoDB, backend, and frontend
 
-## Technology Stack
+## Technology stack
+
+### Backend
 
 - Node.js with ES modules
 - Express 5
 - MongoDB with Mongoose
 - JSON Web Tokens
-- bcryptjs for password hashing
-- dotenv for environment configuration
+- bcryptjs
+- dotenv
 
-## Project Structure
+### Frontend
+
+- React 19
+- Vite
+- React Router
+- Redux Toolkit and React Redux
+- Axios
+- Material UI
+- React Toastify
+
+## Project structure
 
 ```text
-backend/
-├── config/        Database and environment configuration
-├── controller/    Request handlers
-├── middleware/    Authentication and error middleware
-├── models/        Mongoose schemas
-├── routes/        API route definitions
-└── utils/         JWT and API helper utilities
-docs/
-└── API.md         Endpoint reference
+.
+├── backend/
+│   ├── config/        Database and environment configuration
+│   ├── controller/    Request handlers
+│   ├── middleware/    Authentication and error middleware
+│   ├── models/        Mongoose schemas
+│   ├── routes/        API route definitions
+│   ├── scripts/       Maintenance scripts
+│   └── utils/         JWT, API, and email helpers
+├── frontend/
+│   ├── public/        Static assets
+│   └── src/
+│       ├── components/ Reusable UI components
+│       ├── features/   Redux slices
+│       ├── pages/      Application pages
+│       └── ...         Styles and application setup
+├── compose.yaml       Docker Compose development environment
+├── docs/API.md        Detailed API reference
+└── package.json       Backend scripts and dependencies
 ```
 
 ## Prerequisites
 
-- Node.js 18 or later
-- MongoDB running locally or a reachable MongoDB deployment
-- npm
+For local development:
 
-## Installation
+- Node.js 18 or later
+- npm
+- MongoDB running locally or a reachable MongoDB deployment
+
+For Docker development:
+
+- Docker Engine
+- Docker Compose
+
+## Local installation
+
+Clone the repository and install dependencies for both applications:
 
 ```bash
 git clone <repository-url>
 cd E-commerce
 npm install
+npm --prefix frontend install
 ```
 
-Create or update `backend/config/config.env`:
+Create `backend/config/config.env` with environment-specific values:
 
 ```env
 PORT=8000
@@ -58,73 +94,151 @@ JWT_EXPIRE=7d
 EXPIRE_COOKIE=2
 ```
 
-Do not commit real secrets. Use a unique JWT secret for each environment.
+Do not commit real passwords, JWT secrets, SMTP credentials, or other
+secrets. Use a unique `JWT_SECRET` for each environment.
 
-## Running the API
+## Run locally
 
-Start the development server with:
+Start the backend from the repository root:
 
 ```bash
 npm run dev
 ```
 
-The API is available at `http://localhost:8000/api/v1` by default. The server must be able to connect to MongoDB before it starts accepting requests.
+Start the frontend in a second terminal:
 
-When running with Docker Compose, set `DB_URL` in `.env` to the MongoDB instance
-that contains your products. The Compose development default uses the host
-MongoDB at `mongodb://127.0.0.1:27017/E-commerce`; the bundled
-MongoDB service has a separate volume and will not contain host database data.
-The backend uses host networking in this setup because a local MongoDB commonly
-binds only to `127.0.0.1`; the frontend proxies API requests to port `8000` on
-the host.
+```bash
+npm --prefix frontend run dev
+```
 
-## API Overview
+Open [http://localhost:5173](http://localhost:5173). The Vite development
+server proxies requests beginning with `/api` to `http://localhost:8000`.
+
+Useful frontend commands:
+
+```bash
+npm --prefix frontend run build
+npm --prefix frontend run lint
+npm --prefix frontend run preview
+```
+
+The backend API base URL is
+[http://localhost:8000/api/v1](http://localhost:8000/api/v1).
+
+## Run with Docker Compose
+
+The Compose setup starts MongoDB, the backend, and the frontend:
+
+```bash
+docker compose up -d --build
+```
+
+Open [http://localhost:5173](http://localhost:5173), then check service status
+with:
+
+```bash
+docker compose ps
+```
+
+View logs when diagnosing startup or API issues:
+
+```bash
+docker compose logs -f backend
+docker compose logs -f frontend
+docker compose logs -f mongo
+```
+
+Stop the services without deleting the MongoDB volume:
+
+```bash
+docker compose down
+```
+
+The Compose file requires `MONGO_INITDB_ROOT_USERNAME` and
+`MONGO_INITDB_ROOT_PASSWORD` in the root `.env` file. It uses the MongoDB
+volume named `mongo_data` for persistence. The backend uses host networking and
+connects to the MongoDB service through the configured `DB_URL`; the frontend
+uses `BACKEND_URL` to reach the backend.
+
+For more day-to-day Docker commands, see
+[`run_docker.md`](run_docker.md).
+
+## API overview
+
+All API routes are prefixed with `/api/v1`.
 
 | Method | Endpoint | Authentication | Purpose |
 | --- | --- | --- | --- |
 | `POST` | `/register` | Public | Create a user account |
 | `POST` | `/login` | Public | Authenticate a user |
 | `GET` | `/logout` | Public | Clear the authentication cookie |
-| `GET` | `/products` | Required | List products |
-| `GET` | `/product/:id` | Required | Get one product |
-| `POST` | `/products` | Admin | Create a product |
-| `PUT` | `/product/:id` | Required | Update a product |
-| `DELETE` | `/product/:id` | Required | Delete a product |
+| `GET` | `/products` | Public | List products |
+| `GET` | `/product/:id` | Public | Get one product |
+| `POST` | `/admin/product/create` | Admin | Create a product |
+| `PUT` | `/admin/product/:id` | Admin | Update a product |
+| `DELETE` | `/admin/product/:id` | Admin | Delete a product |
+| `PUT` | `/review` | Authenticated user | Create or update a review |
+| `GET` | `/reviews` | Authenticated user | List product reviews |
+| `DELETE` | `/reviews` | Authenticated user | Delete a review |
 
-All endpoints are prefixed with `/api/v1`. See [docs/API.md](docs/API.md) for request fields, authentication details, and response examples.
+Product listing supports `keyword`, category filters, `page`, and `limit`
+query parameters:
 
-## Development Notes
+```text
+GET /api/v1/products?keyword=laptop&category=electronics&page=1&limit=8
+```
 
-- Passwords are hashed before being stored.
-- Product routes expect the JWT to be provided in the `token` cookie.
-- Product creation is restricted to users with the `admin` role.
-- Product image migration defaults to a dry run. Review it with `npm run migrate:product-images`, then apply verified image URLs with `npm run migrate:product-images:apply`.
-- Use a REST client such as Postman or Insomnia to exercise the API.
+Successful login and registration issue a JWT in the `token` HTTP-only cookie.
+Protected requests must send that cookie. See
+[`docs/API.md`](docs/API.md) for request fields and response examples.
 
-## Migrating product images
+## Product image migration
 
-`backend/scripts/migrateProductImages.js` updates only products that do not have
-an accessible image entry containing both a `public_id` and a `url`. It verifies
-image URLs as accessible image responses before proposing or writing them,
-preserves all other product fields, and is safe to rerun.
-
-Run the dry run first:
+The image migration script starts in dry-run mode and only updates products
+with missing or inaccessible image entries:
 
 ```bash
 npm run migrate:product-images
-```
-
-If the summary contains only expected image matches, apply the changes:
-
-```bash
 npm run migrate:product-images:apply
 ```
 
-The script uses the existing `DB_URL` and the `E-commerce` database name from
-the application connection configuration. It does not print credentials or
-delete products. Products reported as failed require a manually verified image
-URL before they can be migrated.
+Review the dry-run output before applying changes. The script uses the existing
+`DB_URL`, preserves other product fields, and does not delete products.
+
+## Troubleshooting
+
+### The frontend shows `502 Bad Gateway` for `/api/v1/products`
+
+This means the Vite proxy cannot reach the backend. Check that the backend is
+running and listening on port `8000`:
+
+```bash
+curl -i http://localhost:8000/api/v1/products
+docker compose logs --tail=100 backend
+```
+
+If the backend exits during startup, fix the reported syntax or database
+connection error before restarting it:
+
+```bash
+docker compose restart backend
+```
+
+### The frontend is a blank white page
+
+Check the browser console and Vite logs for a JavaScript parse or module
+initialization error. A broken Redux slice or JSX syntax error can prevent
+React from mounting even when `http://localhost:5173` itself returns `200`.
+After correcting source files, refresh with `Ctrl+Shift+R`.
+
+### Products are unavailable
+
+Confirm that MongoDB is reachable, the backend reports a successful MongoDB
+connection, and the selected database contains product records. In Docker,
+the bundled MongoDB volume is separate from any MongoDB data installed on the
+host.
 
 ## License
 
-This project is currently provided for development and educational use. Add a project license before distributing it publicly.
+This project is currently provided for development and educational use. Add a
+project license before distributing it publicly.
