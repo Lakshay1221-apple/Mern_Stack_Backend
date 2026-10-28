@@ -54,7 +54,7 @@ export const loginUser = handleAsynError(async(req, res, next) => {
 export const logout = handleAsynError(async(req, res, next) => {
 
     res.cookie('token', null, {
-        expires: new Date(Date.now())
+        expires: new Date(Date.now()),
         httpOnly: true
     });
 
